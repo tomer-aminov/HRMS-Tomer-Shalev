@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>צפייה בקובץ PDF - HRMS</title>
+      <link
+         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+         rel="stylesheet"
+         type="text/css"
+      />
+      <link
+         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+         rel="stylesheet"
+      />
+
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+      />
+      <link href="css/hrms-admin.min.css" rel="stylesheet" />
+
+      <!-- PDF.js -->
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+      <style>
+         .pdf-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            margin: 2rem auto;
+            max-width: 1200px;
+            overflow: hidden;
+         }
+
+         .pdf-toolbar {
+            background: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+         }
+
+         .pdf-controls {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+         }
+
+         .btn-pdf {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+         }
+
+         .btn-pdf:hover {
+            background: #0056b3;
+            transform: translateY(-1px);
+         }
+
+         .btn-pdf:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+         }
+
+         .page-info {
+            font-weight: 600;
+            color: #495057;
+            margin: 0 1rem;
+         }
+
+         .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+         }
+
+         .zoom-btn {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 0.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+         }
+
+         .zoom-btn:hover {
+            background: #218838;
+         }
+
+         .pdf-viewer {
+            width: 100%;
+            height: 70vh;
+            overflow: auto;
+            background: #e9ecef;
+            position: relative;
+         }
+
+         .pdf-canvas {
+            display: block;
+            margin: 1rem auto;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            background: white;
+         }
+
+         .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            flex-direction: column;
+            color: #6c757d;
+         }
+
+         .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 1rem;
+         }
+
+         @keyframes spin {
+            0% {
+               transform: rotate(0deg);
+            }
+            100% {
+               transform: rotate(360deg);
+            }
+         }
+
+         .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 1rem;
+            border-radius: 5px;
+            margin: 1rem;
+            text-align: center;
+         }
+
+         .file-info {
+            background: #e7f3ff;
+            border: 1px solid #b3d9ff;
+            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem;
+         }
+
+         .file-info h5 {
+            color: #0056b3;
+            margin-bottom: 0.5rem;
+         }
+
+         .back-btn {
+            background: #6c757d;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+         }
+
+         .back-btn:hover {
+            background: #545b62;
+            color: white;
+            text-decoration: none;
+         }
+
+         @media (max-width: 768px) {
+            .pdf-toolbar {
+               flex-direction: column;
+               gap: 1rem;
+            }
+
+            .pdf-controls {
+               justify-content: center;
+            }
+
+            .pdf-viewer {
+               height: 50vh;
+            }
+         }
+      </style>
+   </head>
+   <body id="page-top">
+      <div id="wrapper">
+         <ul
+            class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+            id="accordionSidebar"
+         >
+            <!-- Sidebar - Brand -->
+            <a
+               class="sidebar-brand d-flex align-items-center justify-content-center"
+               href="index.html"
+            >
+               <div class="sidebar-brand-icon">
+                  <img
+                     src="logo.png"
+                     alt="HRMS Logo"
+                     style="width: 40px; height: 40px; object-fit: contain"
+                  />
+               </div>
+               <div class="sidebar-brand-text mx-3">HRMS</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0" />
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+               <a class="nav-link" href="index.html">
+                  <i class="fas fa-fw fa-home"></i>
+                  <span>דף הבית</span></a
+               >
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0" />
+
+            <!-- Nav Item - Employee Dashboard -->
+            <li class="nav-item">
+               <a class="nav-link" href="HomePageForEmp.html">
+                  <i class="fas fa-fw fa-user"></i>
+                  <span>דשבורד עובד</span></a
+               >
+            </li>
+
+            <!-- Nav Item - Recruiter Dashboard -->
+            <li class="nav-item">
+               <a class="nav-link" href="HomePageForRec.html">
+                  <i class="fas fa-fw fa-briefcase"></i>
+                  <span>דשבורד מגייס</span></a
+               >
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block" />
+         </ul>
+         <!-- Until here side navigaton -->
+         <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+               <!-- Topbar -->
+               <nav
+                  class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+               >
+                  <!-- Sidebar Toggle (Topbar) -->
+                  <button
+                     id="sidebarToggleTop"
+                     class="btn btn-link d-md-none rounded-circle mr-3"
+                  >
+                     <i class="fa fa-bars"></i>
+                  </button>
+
+                  <!-- Topbar Navbar -->
+                  <ul class="navbar-nav ml-auto">
+                     <div class="topbar-divider d-none d-sm-block"></div>
+
+                     <!-- Nav Item - User Information -->
+                     <li class="nav-item dropdown no-arrow">
+                        <a
+                           class="nav-link dropdown-toggle"
+                           href="#"
+                           id="userDropdown"
+                           role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true"
+                           aria-expanded="false"
+                        >
+                           <span class="mr-2 text-gray-600 small" id="userName"
+                              >משתמש</span
+                           >
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div
+                           class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                           aria-labelledby="userDropdown"
+                        >
+                           <a class="dropdown-item" href="#">
+                              <i
+                                 class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"
+                              ></i>
+                              פרופיל
+                           </a>
+                           <a class="dropdown-item" href="#">
+                              <i
+                                 class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"
+                              ></i>
+                              הגדרות
+                           </a>
+                           <a class="dropdown-item" href="#">
+                              <i
+                                 class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"
+                              ></i>
+                              יומן פעילות
+                           </a>
+                           <div class="dropdown-divider"></div>
+                           <a class="dropdown-item" href="#" id="logoutBtn">
+                              <i
+                                 class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+                              ></i>
+                              התנתקות
+                           </a>
+                        </div>
+                     </li>
+                  </ul>
+               </nav>
+               <!-- End of Topbar -->
+
+               <!-- Begin Page Content -->
+               <div class="container-fluid">
+                  <!-- Page Heading -->
+                  <div
+                     class="d-sm-flex align-items-center justify-content-between mb-4"
+                  >
+                     <h1 class="h3 mb-0 text-gray-800">
+                        <i class="fas fa-file-pdf"></i> תצוגת קובץ
+                     </h1>
+                     <a
+                        href="javascript:void(0)"
+                        onclick="goBack()"
+                        class="back-btn"
+                     >
+                        חזרה <i class="fas fa-arrow-right"></i>
+                     </a>
+                  </div>
+
+                  <div class="pdf-container">
+                     <div class="pdf-toolbar">
+                        <div class="pdf-controls">
+                           <button class="btn-pdf" id="nextPage" disabled>
+                              <i class="fas fa-chevron-left"></i> עמוד הבא
+                           </button>
+                           <span class="page-info" id="pageInfo"
+                              >עמוד 1 מתוך 1</span
+                           >
+                           <button class="btn-pdf" id="prevPage" disabled>
+                              עמוד קודם <i class="fas fa-chevron-right"></i>
+                           </button>
+                        </div>
+
+                        <div class="zoom-controls">
+                           <button class="zoom-btn" id="zoomOut" title="הקטן">
+                              <i class="fas fa-search-minus"></i>
+                           </button>
+                           <span
+                              id="zoomLevel"
+                              style="font-weight: 600; color: #495057"
+                              >100%</span
+                           >
+                           <button class="zoom-btn" id="zoomIn" title="הגדל">
+                              <i class="fas fa-search-plus"></i>
+                           </button>
+                           <button
+                              class="btn-pdf"
+                              id="refreshBtn"
+                              title="רענן קובץ"
+                              style="margin-right: 10px"
+                           >
+                              <i class="fas fa-sync-alt"></i> רענן
+                           </button>
+                        </div>
+                     </div>
+
+                     <div class="pdf-viewer" id="pdfViewer">
+                        <div class="loading" id="loading">
+                           <div class="spinner"></div>
+                           <p>הקובץ בטעינה</p>
+                        </div>
+                     </div>
+                  </div>
+
+                  <div class="file-info" id="fileInfo" style="display: none">
+                     <h5><i class="fas fa-info-circle"></i> פרטי הקובץ</h5>
+                     <p id="fileName"></p>
+                     <p id="fileSize"></p>
+                  </div>
+
+                  <div
+                     class="alert alert-info"
+                     id="refreshInfo"
+                     style="margin-top: 1rem"
+                  >
+                     <i class="fas fa-info-circle"></i>
+                     <strong>טיפ:</strong> אם העלית קובץ חדש, לחץ על כפתור
+                     "רענן" כדי לראות את הקובץ המעודכן.
+                  </div>
+               </div>
+               <!-- End of Main Content -->
+
+               <!-- Footer -->
+               <footer class="sticky-footer bg-white">
+                  <div class="container my-auto">
+                     <div class="copyright text-center my-auto">
+                        <span> &copy; HRMS - Tomer & Shalev</span>
+                     </div>
+                  </div>
+               </footer>
+               <!-- End of Footer -->
+            </div>
+         </div>
+      </div>
+      <!-- Closing  <div id="wrapper"> -->
+   </body>
+   <script src="vendor/jquery/jquery.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+   <!-- Custom scripts for all pages-->
+   <script src="js/hrms-admin.min.js"></script>
+
+   <!-- User Management Script -->
+   <script>
+      document.addEventListener('DOMContentLoaded', function () {
+         // בדיקה אם המשתמש מחובר (אופציונלי)
+         const currentUser = localStorage.getItem('currentUser')
+
+         if (currentUser) {
+            const user = JSON.parse(currentUser)
+
+            // הצג את שם המשתמש אם הוא מחובר
+            const userNameElement = document.getElementById('userName')
+            userNameElement.textContent = `${user.firstName} ${user.lastName}`
+
+            // כפתור התנתקות
+            const logoutBtn = document.getElementById('logoutBtn')
+            logoutBtn.addEventListener('click', function (e) {
+               e.preventDefault()
+
+               // מחיקת פרטי המשתמש
+               localStorage.removeItem('currentUser')
+
+               // חזרה לעמוד ההתחברות
+               window.location.href = 'index.html'
+            })
+         } else {
+            // אם לא מחובר, הצג "אורח" או הסתר את התפריט
+            const userNameElement = document.getElementById('userName')
+            userNameElement.textContent = 'אורח'
+
+            // הסתר את כפתור ההתנתקות
+            const logoutBtn = document.getElementById('logoutBtn')
+            if (logoutBtn) {
+               logoutBtn.style.display = 'none'
+            }
+         }
+      })
+   </script>
+
+   <!-- PDF Viewer Script -->
+   <script>
+      // הגדרת API Base URL
+      const API_BASE_URL = 'http://localhost:3000/api'
+
+      // הגדרת PDF.js worker
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+         'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js'
+
+      let pdfDoc = null
+      let pageNum = 1
+      let pageRendering = false
+      let pageNumPending = null
+      let scale = 1.0
+      const scaleDelta = 0.2
+
+      // קבלת פרמטרים מה-URL
+      const urlParams = new URLSearchParams(window.location.search)
+      const fileUrl = urlParams.get('file')
+      const fileName = urlParams.get('name')
+      const fileHash = urlParams.get('hash')
+
+      // אלמנטים
+      const pdfViewer = document.getElementById('pdfViewer')
+      const loading = document.getElementById('loading')
+      const prevPage = document.getElementById('prevPage')
+      const nextPage = document.getElementById('nextPage')
+      const pageInfo = document.getElementById('pageInfo')
+      const zoomIn = document.getElementById('zoomIn')
+      const zoomOut = document.getElementById('zoomOut')
+      const zoomLevel = document.getElementById('zoomLevel')
+      const refreshBtn = document.getElementById('refreshBtn')
+      const fileInfo = document.getElementById('fileInfo')
+      const fileNameElement = document.getElementById('fileName')
+      const fileSizeElement = document.getElementById('fileSize')
+
+      // בדיקה אם יש קובץ לטעינה
+      if (!fileUrl) {
+         showError('לא הועבר קובץ לצפייה')
+      } else {
+         loadPDF(fileUrl)
+         showFileInfo()
+
+         // הסתרת הודעת הטיפ אחרי 10 שניות
+         setTimeout(() => {
+            const refreshInfo = document.getElementById('refreshInfo')
+            if (refreshInfo) {
+               refreshInfo.style.display = 'none'
+            }
+         }, 10000)
+      }
+
+      function showError(message) {
+         loading.innerHTML = `
+             <div class="error-message">
+                 <i class="fas fa-exclamation-triangle"></i>
+                 <h4>שגיאה בטעינת הקובץ</h4>
+                 <p>${message}</p>
+                 <a href="javascript:void(0)" onclick="goBack()" class="btn btn-primary">חזרה</a>
+             </div>
+         `
+      }
+
+      function showFileInfo() {
+         if (fileName) {
+            fileNameElement.textContent = `שם הקובץ: ${fileName}`
+            fileInfo.style.display = 'block'
+         }
+      }
+
+      async function loadPDF(url) {
+         try {
+            // הוספת פרמטר hash לשבירת cache אם לא קיים
+            let finalUrl = url
+            if (!url.includes('?h=') && !url.includes('?t=')) {
+               const hash = fileHash || Date.now()
+               finalUrl = `${url}${url.includes('?') ? '&' : '?'}h=${hash}`
+            }
+
+            console.log('טוען PDF מ:', finalUrl)
+
+            // טעינת הקובץ
+            const loadingTask = pdfjsLib.getDocument({
+               url: finalUrl,
+               disableCache: true,
+               disableStream: false,
+               disableAutoFetch: false
+            })
+            pdfDoc = await loadingTask.promise
+
+            // הסתרת מסך הטעינה
+            loading.style.display = 'none'
+
+            // עדכון מידע על העמודים
+            pageInfo.textContent = `עמוד 1 מתוך ${pdfDoc.numPages}`
+
+            // הפעלת כפתורים
+            updatePageButtons()
+
+            // טעינת העמוד הראשון
+            renderPage(pageNum)
+         } catch (error) {
+            console.error('שגיאה בטעינת PDF:', error)
+            showError(
+               'לא ניתן לטעון את הקובץ. ייתכן שהקובץ לא קיים או שאין הרשאה לצפייה בו.'
+            )
+         }
+      }
+
+      function renderPage(num) {
+         pageRendering = true
+
+         pdfDoc.getPage(num).then(function (page) {
+            const viewport = page.getViewport({ scale: scale })
+            const canvas = document.createElement('canvas')
+            const ctx = canvas.getContext('2d')
+
+            canvas.height = viewport.height
+            canvas.width = viewport.width
+            canvas.className = 'pdf-canvas'
+
+            const renderContext = {
+               canvasContext: ctx,
+               viewport: viewport
+            }
+
+            const renderTask = page.render(renderContext)
+
+            renderTask.promise.then(function () {
+               pageRendering = false
+
+               // ניקוי הקונטיינר והוספת הקנבס
+               pdfViewer.innerHTML = ''
+               pdfViewer.appendChild(canvas)
+
+               if (pageNumPending !== null) {
+                  renderPage(pageNumPending)
+                  pageNumPending = null
+               }
+            })
+         })
+
+         pageInfo.textContent = `עמוד ${num} מתוך ${pdfDoc.numPages}`
+      }
+
+      function queueRenderPage(num) {
+         if (pageRendering) {
+            pageNumPending = num
+         } else {
+            renderPage(num)
+         }
+      }
+
+      function onPrevPage() {
+         if (pageNum <= 1) {
+            return
+         }
+         pageNum--
+         queueRenderPage(pageNum)
+         updatePageButtons()
+      }
+
+      function onNextPage() {
+         if (pageNum >= pdfDoc.numPages) {
+            return
+         }
+         pageNum++
+         queueRenderPage(pageNum)
+         updatePageButtons()
+      }
+
+      function updatePageButtons() {
+         prevPage.disabled = pageNum <= 1
+         nextPage.disabled = pageNum >= pdfDoc.numPages
+      }
+
+      function onZoomIn() {
+         scale += scaleDelta
+         updateZoom()
+         queueRenderPage(pageNum)
+      }
+
+      function onZoomOut() {
+         if (scale > scaleDelta) {
+            scale -= scaleDelta
+            updateZoom()
+            queueRenderPage(pageNum)
+         }
+      }
+
+      function updateZoom() {
+         zoomLevel.textContent = Math.round(scale * 100) + '%'
+      }
+
+      // פונקציה לרענון הקובץ
+      function refreshFile() {
+         // איפוס משתנים
+         pdfDoc = null
+         pageNum = 1
+         pageRendering = false
+         pageNumPending = null
+         scale = 1.0
+
+         // הצגת מסך טעינה
+         loading.style.display = 'flex'
+         pdfViewer.innerHTML = `
+            <div class="loading" id="loading">
+               <div class="spinner"></div>
+               <p>מרענן קובץ PDF...</p>
+            </div>
+         `
+
+         // טעינה מחדש של הקובץ עם hash חדש
+         const newUrl = fileUrl.split('?')[0] + '?h=' + Date.now()
+         loadPDF(newUrl)
+
+         console.log('מרענן קובץ עם URL חדש:', newUrl)
+      }
+
+      // Event listeners
+      prevPage.addEventListener('click', onPrevPage)
+      nextPage.addEventListener('click', onNextPage)
+      zoomIn.addEventListener('click', onZoomIn)
+      zoomOut.addEventListener('click', onZoomOut)
+      refreshBtn.addEventListener('click', refreshFile)
+
+      // בדיקה אוטומטית אם הקובץ השתנה (כל 30 שניות)
+      let fileCheckInterval
+      if (fileHash) {
+         fileCheckInterval = setInterval(async () => {
+            try {
+               // בדיקה אם הקובץ השתנה על ידי קריאה ל-API
+               const userId = fileUrl.match(/\/users\/([^\/]+)\/view-pdf/)?.[1]
+               if (userId) {
+                  const response = await fetch(
+                     `${API_BASE_URL}/users/${userId}/file-info`
+                  )
+                  if (response.ok) {
+                     const data = await response.json()
+                     if (
+                        data.success &&
+                        data.data &&
+                        data.data.fileHash !== fileHash
+                     ) {
+                        // הקובץ השתנה - הצג הודעה למשתמש
+                        const refreshInfo =
+                           document.getElementById('refreshInfo')
+                        if (refreshInfo) {
+                           refreshInfo.innerHTML = `
+                              <i class="fas fa-exclamation-triangle"></i>
+                              <strong>הקובץ השתנה!</strong> לחץ על כפתור "רענן" כדי לראות את הקובץ המעודכן.
+                           `
+                           refreshInfo.className = 'alert alert-warning'
+                           refreshInfo.style.display = 'block'
+                        }
+                     }
+                  }
+               }
+            } catch (error) {
+               console.log('שגיאה בבדיקת עדכון הקובץ:', error)
+            }
+         }, 30000) // בדיקה כל 30 שניות
+      }
+
+      // ניווט במקלדת
+      document.addEventListener('keydown', function (e) {
+         if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+            onNextPage()
+         } else if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+            onPrevPage()
+         } else if (e.key === '+' || e.key === '=') {
+            onZoomIn()
+         } else if (e.key === '-') {
+            onZoomOut()
+         }
+      })
+
+      // פונקציה לחזרה לעמוד הקודם
+      function goBack() {
+         if (window.history.length > 1) {
+            window.history.back()
+         } else {
+            // אם אין היסטוריה, לך לדף הבית
+            window.location.href = 'index.html'
+         }
+      }
+
+      // ניקוי interval כאשר הדף נסגר
+      window.addEventListener('beforeunload', function () {
+         if (fileCheckInterval) {
+            clearInterval(fileCheckInterval)
+         }
+      })
+   </script>
+</html>

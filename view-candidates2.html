@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>HRMS - צפייה במועמדים למשרות</title>
+      <title>HRMS - מועמדים למשרה</title>
       <link
          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
          rel="stylesheet"
@@ -151,30 +151,75 @@
                   <div
                      class="d-sm-flex align-items-center justify-content-between mb-4"
                   >
-                     <h1 class="h3 mb-0 text-gray-800"
-                        >צפייה במועמדים למשרות</h1
-                     >
+                     <h1 class="h3 mb-0 text-gray-800">
+                        <i class="fas fa-users"></i> מועמדים למשרה
+                     </h1>
                      <a
-                        href="HomePageForRec.html"
+                        href="view-candidates.html"
                         class="btn btn-primary btn-sm"
                      >
                         <i class="fas fa-arrow-right fa-sm"></i>
-                        חזרה ללוח הבקרה
+                        חזרה לרשימת המשרות
                      </a>
                   </div>
 
-                  <!-- Jobs List -->
+                  <!-- Job Info Card -->
+                  <div class="row mb-4">
+                     <div class="col-12">
+                        <div class="card border-left-primary shadow h-100">
+                           <div class="card-body">
+                              <div class="row no-gutters align-items-center">
+                                 <div class="col mr-2">
+                                    <div
+                                       class="text-xs font-weight-bold text-primary text-uppercase mb-1"
+                                    >
+                                       פרטי המשרה
+                                    </div>
+                                    <div
+                                       class="h5 mb-0 font-weight-bold text-gray-800"
+                                       id="jobTitle"
+                                    >
+                                       טוען...
+                                    </div>
+                                    <div
+                                       class="text-sm text-gray-600 mt-2"
+                                       id="jobDescription"
+                                    >
+                                       טוען...
+                                    </div>
+                                 </div>
+                                 <div class="col-auto">
+                                    <i
+                                       class="fas fa-briefcase fa-2x text-gray-300"
+                                    ></i>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+
+                  <!-- Candidates List -->
                   <div class="row">
                      <div class="col-12">
                         <div class="card shadow mb-4">
                            <div class="card-header py-3">
                               <h6 class="m-0 font-weight-bold text-primary">
-                                 רשימת משרות זמינות
+                                 רשימת המועמדים
                               </h6>
                            </div>
                            <div class="card-body">
-                              <div id="jobsList" class="row">
-                                 <!-- Jobs will be loaded here dynamically -->
+                              <div id="candidatesList">
+                                 <!-- Candidates will be loaded here dynamically -->
+                                 <div class="text-center">
+                                    <div
+                                       class="spinner-border text-primary"
+                                       role="status"
+                                    >
+                                       <span class="sr-only">טוען...</span>
+                                    </div>
+                                    <p class="mt-2">טוען מועמדים...</p>
+                                 </div>
                               </div>
                            </div>
                         </div>
@@ -240,21 +285,35 @@
             window.location.href = 'index.html'
          })
 
-         // טעינת המשרות מהשרת
-         loadJobs()
+         // קבלת jobId מה-URL
+         const urlParams = new URLSearchParams(window.location.search)
+         const jobId = urlParams.get('jobId')
+
+         if (!jobId) {
+            showError('לא הועבר מזהה משרה')
+            return
+         }
+
+         // טעינת פרטי המשרה והמועמדים
+         loadJobDetails(jobId)
       })
 
-      // פונקציה לטעינת המשרות
-      async function loadJobs() {
+      // פונקציה לטעינת פרטי המשרה והמועמדים
+      async function loadJobDetails(jobId) {
          try {
-            const response = await fetch('http://localhost:3000/api/jobs')
+            const response = await fetch(
+               `http://localhost:3000/api/jobs/${jobId}`
+            )
             const result = await response.json()
 
+            console.log('Full API response:', result)
+
             if (result.success) {
-               displayJobs(result.data)
+               displayJobInfo(result.data)
+               displayCandidates(result.data.users)
             } else {
-               console.error('Error loading jobs:', result.message)
-               showError('שגיאה בטעינת המשרות')
+               console.error('Error loading job details:', result.message)
+               showError('שגיאה בטעינת פרטי המשרה')
             }
          } catch (error) {
             console.error('Error:', error)
@@ -262,63 +321,77 @@
          }
       }
 
-      // פונקציה להצגת המשרות
-      function displayJobs(jobs) {
-         const jobsListElement = document.getElementById('jobsList')
+      // פונקציה להצגת פרטי המשרה
+      function displayJobInfo(job) {
+         const jobTitleElement = document.getElementById('jobTitle')
+         const jobDescriptionElement = document.getElementById('jobDescription')
 
-         if (jobs.length === 0) {
-            jobsListElement.innerHTML = `
-               <div class="col-12 text-center">
+         jobTitleElement.textContent = job.title
+         jobDescriptionElement.textContent = job.description
+      }
+
+      // פונקציה להצגת המועמדים
+      function displayCandidates(users) {
+         const candidatesListElement = document.getElementById('candidatesList')
+
+         // לוג לבדיקת הנתונים שמגיעים מהשרת
+         console.log('Users data received:', users)
+         users.forEach((user, index) => {
+            console.log(`User ${index + 1}:`, {
+               firstName: user.firstName,
+               lastName: user.lastName,
+               email: user.email,
+               phoneNumber: user.phoneNumber,
+               role: user.role
+            })
+         })
+
+         if (!users || users.length === 0) {
+            candidatesListElement.innerHTML = `
+               <div class="text-center">
                   <div class="alert alert-info">
                      <i class="fas fa-info-circle"></i>
-                     אין משרות זמינות כרגע
+                     אין מועמדים למשרה זו כרגע
                   </div>
                </div>
             `
             return
          }
 
-         const jobsHTML = jobs
+         const candidatesHTML = users
             .map(
-               (job, index) => `
-            <div class="col-lg-6 col-xl-4 mb-4">
-               <div class="card border-left-primary shadow h-100">
-                  <div class="card-body">
-                     <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                           <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                              משרה ${index + 1}
+               (user, index) => `
+            <div class="row mb-3">
+               <div class="col-12">
+                  <div class="card border-left-success shadow h-100">
+                     <div class="card-body">
+                        <div class="row no-gutters align-items-center">
+                           <div class="col mr-2">
+
+                              <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                 ${user.firstName} ${user.lastName}
+                              </div>
+                              <div class="text-sm text-gray-600 mt-2">
+                                 <i class="fas fa-envelope"></i> ${user.email}
+                              </div>
+                                                             <div class="text-sm text-gray-600">
+                                  <i class="fas fa-phone"></i> ${
+                                     user.phoneNumber || 'לא צוין'
+                                  }
+                               </div>
                            </div>
-                           <div class="h5 mb-0 font-weight-bold text-gray-800">
-                              ${job.title}
-                           </div>
-                           <div class="text-sm text-gray-600 mt-2">
-                              ${job.description}
-                           </div>
-                           <div class="mt-3">
-                              <span class="badge badge-info">
-                                 <i class="fas fa-users"></i>
-                                 ${job.users ? job.users.length : 0} מועמדים
-                              </span>
+                           <div class="col-auto">
+                              <i class="fas fa-user fa-2x text-gray-300"></i>
                            </div>
                         </div>
-                        <div class="col-auto">
-                           <i class="fas fa-briefcase fa-2x text-gray-300"></i>
-                        </div>
-                     </div>
-                     <div class="mt-3">
-                        <button class="btn btn-primary btn-sm" onclick="viewCandidates('${
-                           job._id
-                        }')">
-                           <i class="fas fa-users"></i>
-                           צפייה במועמדים
-                        </button>
-                        <button class="btn btn-outline-secondary btn-sm ml-2" onclick="viewJobDetails('${
-                           job._id
-                        }')">
-                           <i class="fas fa-eye"></i>
-                           פרטים
-                        </button>
+                                                 <div class="mt-3">
+                            <button class="btn btn-primary btn-sm" onclick="viewUserCV('${
+                               user._id
+                            }')">
+                               <i class="fas fa-file-pdf"></i>
+                               צפייה בקובץ קורות החיים
+                            </button>
+                         </div>
                      </div>
                   </div>
                </div>
@@ -327,27 +400,54 @@
             )
             .join('')
 
-         jobsListElement.innerHTML = jobsHTML
+         candidatesListElement.innerHTML = candidatesHTML
       }
 
-      // פונקציה לצפייה במועמדים למשרה ספציפית
-      function viewCandidates(jobId) {
-         // ניווט לעמוד המועמדים למשרה ספציפית
-         window.location.href = `view-candidates2.html?jobId=${jobId}`
-      }
+      // פונקציה לצפייה בקובץ קורות החיים של המשתמש
+      async function viewUserCV(userId) {
+         try {
+            // קבלת מידע על הקובץ מהשרת
+            const response = await fetch(
+               `http://localhost:3000/api/users/${userId}/file-info`
+            )
 
-      // פונקציה לצפייה בפרטי המשרה
-      function viewJobDetails(jobId) {
-         // כאן תוכל להוסיף ניווט לעמוד פרטי המשרה
-         alert(`פרטי המשרה: ${jobId}`)
-         // window.location.href = `job-details.html?jobId=${jobId}`
+            if (!response.ok) {
+               const errorData = await response.json()
+               alert(errorData.message || 'לא ניתן לפתוח את הקובץ')
+               return
+            }
+
+            const data = await response.json()
+
+            if (data.success && data.data) {
+               // בניית URL לדף הצפייה עם hash לשבירת cache
+               const fileHash =
+                  data.data.fileHash ||
+                  data.data.lastModifiedTimestamp ||
+                  Date.now()
+               const fileUrl = `http://localhost:3000/api/users/${userId}/view-pdf?h=${fileHash}`
+               const viewerUrl = `PDFViewer.html?file=${encodeURIComponent(
+                  fileUrl
+               )}&name=${encodeURIComponent(
+                  data.data.fileName
+               )}&hash=${fileHash}`
+
+               // פתיחת הדף בחלון חדש
+               window.open(viewerUrl, '_blank')
+            } else {
+               alert('לא ניתן לפתוח את הקובץ')
+            }
+         } catch (error) {
+            console.error('שגיאה בפתיחת הקובץ:', error)
+            alert('שגיאה בפתיחת הקובץ')
+         }
       }
 
       // פונקציה להצגת שגיאות
       function showError(message) {
-         const jobsListElement = document.getElementById('jobsList')
-         jobsListElement.innerHTML = `
-            <div class="col-12 text-center">
+         const candidatesListElement = document.getElementById('candidatesList')
+         candidatesListElement.innerHTML = `
+            <div class="text-center">
                <div class="alert alert-danger">
                   <i class="fas fa-exclamation-triangle"></i>
                   ${message}
