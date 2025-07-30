@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>Document</title>
+      <title>HRMS - התחברות</title>
       <link
          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
          rel="stylesheet"
@@ -48,31 +48,12 @@
             <li class="nav-item active">
                <a class="nav-link" href="index.html">
                   <i class="fas fa-fw fa-tachometer-alt"></i>
-                  <span>Dashboard</span></a
+                  <span>התחברות</span></a
                >
             </li>
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0" />
-
-            <!-- Nav Item - Charts -->
-            <li class="nav-item">
-               <a class="nav-link" href="charts.html">
-                  <i class="fas fa-fw fa-chart-area"></i>
-                  <span>Charts</span></a
-               >
-            </li>
-
-            <!-- Nav Item - Tables -->
-            <li class="nav-item">
-               <a class="nav-link" href="tables.html">
-                  <i class="fas fa-fw fa-table"></i>
-                  <span>Tables</span></a
-               >
-            </li>
-
-            <!-- Divider -->
-            <hr class="sidebar-divider d-none d-md-block" />
          </ul>
          <!-- Until here side navigaton -->
          <div id="content-wrapper" class="d-flex flex-column">
@@ -93,77 +74,86 @@
                   <!-- Topbar Navbar -->
                   <ul class="navbar-nav ml-auto">
                      <div class="topbar-divider d-none d-sm-block"></div>
-
-                     <!-- Nav Item - User Information -->
-                     <li class="nav-item dropdown no-arrow">
-                        <a
-                           class="nav-link dropdown-toggle"
-                           href="#"
-                           id="userDropdown"
-                           role="button"
-                           data-toggle="dropdown"
-                           aria-haspopup="true"
-                           aria-expanded="false"
-                        >
-                           <span
-                              class="mr-2 d-none d-lg-inline text-gray-600 small"
-                              >Douglas McGee</span
-                           >
-                        </a>
-                        <!-- Dropdown - User Information -->
-                        <div
-                           class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                           aria-labelledby="userDropdown"
-                        >
-                           <a class="dropdown-item" href="#">
-                              <i
-                                 class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"
-                              ></i>
-                              Profile
-                           </a>
-                           <a class="dropdown-item" href="#">
-                              <i
-                                 class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"
-                              ></i>
-                              Settings
-                           </a>
-                           <a class="dropdown-item" href="#">
-                              <i
-                                 class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"
-                              ></i>
-                              Activity Log
-                           </a>
-                           <div class="dropdown-divider"></div>
-                           <a
-                              class="dropdown-item"
-                              href="#"
-                              data-toggle="modal"
-                              data-target="#logoutModal"
-                           >
-                              <i
-                                 class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
-                              ></i>
-                              Logout
-                           </a>
-                        </div>
-                     </li>
                   </ul>
                </nav>
                <!-- End of Topbar -->
 
                <!-- Begin Page Content -->
-            </div>
-            <!-- End of Main Content -->
+               <div class="container-fluid">
+                  <!-- Page Heading -->
+                  <div
+                     class="d-sm-flex align-items-center justify-content-between mb-4"
+                  >
+                     <h1 class="h3 mb-0 text-gray-800">התחברות למערכת HRMS</h1>
+                  </div>
 
-            <!-- Footer -->
-            <footer class="sticky-footer bg-white">
-               <div class="container my-auto">
-                  <div class="copyright text-center my-auto">
-                     <span> &copy; HRMS - Tomer & Shalev</span>
+                  <!-- Login Form -->
+                  <div class="row justify-content-center">
+                     <div class="col-xl-6 col-lg-8 col-md-10 col-sm-12">
+                        <div class="card shadow mb-4">
+                           <div class="card-header py-3 text-right">
+                              <h6 class="m-0 font-weight-bold text-primary"
+                                 >התחברות למערכת</h6
+                              >
+                           </div>
+                           <div class="card-body">
+                              <form id="loginForm" class="user" dir="rtl">
+                                 <div class="form-group">
+                                    <input
+                                       type="email"
+                                       class="form-control form-control-user text-right"
+                                       id="emailInput"
+                                       aria-describedby="emailHelp"
+                                       placeholder="הכנס כתובת אימייל..."
+                                       dir="rtl"
+                                       required
+                                    />
+                                 </div>
+                                 <div class="form-group">
+                                    <input
+                                       type="password"
+                                       class="form-control form-control-user text-right"
+                                       id="passwordInput"
+                                       placeholder="סיסמה"
+                                       dir="rtl"
+                                       required
+                                    />
+                                 </div>
+                                 <button
+                                    type="submit"
+                                    class="btn btn-primary btn-user btn-block"
+                                    id="loginBtn"
+                                 >
+                                    <span id="loginBtnText">התחברות</span>
+                                    <span
+                                       id="loginBtnSpinner"
+                                       class="spinner-border spinner-border-sm d-none"
+                                       role="status"
+                                    ></span>
+                                 </button>
+                                 <div
+                                    id="loginError"
+                                    class="alert alert-danger mt-3 d-none"
+                                    role="alert"
+                                 ></div>
+                              </form>
+                           </div>
+                        </div>
+                     </div>
                   </div>
                </div>
-            </footer>
-            <!-- End of Footer -->
+               <!-- End of Main Content -->
+
+               <!-- Footer -->
+               <footer class="sticky-footer bg-white">
+                  <div class="container my-auto">
+                     <div class="copyright text-center my-auto">
+                        <span> &copy; HRMS - Tomer & Shalev</span>
+                     </div>
+                  </div>
+               </footer>
+               <!-- End of Footer -->
+            </div>
          </div>
       </div>
       <!-- Closing  <div id="wrapper"> -->
@@ -174,5 +164,103 @@
    <!-- Custom scripts for all pages-->
    <script src="js/hrms-admin.min.js"></script>
 
-   <!-- Page level custom scripts -->
+   <!-- Login Script -->
+   <script>
+      document.addEventListener('DOMContentLoaded', function () {
+         const loginForm = document.getElementById('loginForm')
+         const emailInput = document.getElementById('emailInput')
+         const passwordInput = document.getElementById('passwordInput')
+         const loginBtn = document.getElementById('loginBtn')
+         const loginBtnText = document.getElementById('loginBtnText')
+         const loginBtnSpinner = document.getElementById('loginBtnSpinner')
+         const loginError = document.getElementById('loginError')
+
+         // בדיקה אם המשתמש כבר מחובר
+         const currentUser = localStorage.getItem('currentUser')
+         if (currentUser) {
+            const user = JSON.parse(currentUser)
+            redirectBasedOnRole(user.role)
+         }
+
+         loginForm.addEventListener('submit', async function (e) {
+            e.preventDefault()
+
+            const email = emailInput.value.trim()
+            const password = passwordInput.value.trim()
+
+            if (!email || !password) {
+               showError('אנא מלא את כל השדות')
+               return
+            }
+
+            // הצג loading
+            setLoading(true)
+            hideError()
+
+            try {
+               // התחברות עם אימייל וסיסמה
+               const response = await fetch(
+                  'http://localhost:3000/api/users/login',
+                  {
+                     method: 'POST',
+                     headers: {
+                        'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify({ email, password })
+                  }
+               )
+
+               const result = await response.json()
+
+               if (!result.success) {
+                  throw new Error(result.message || 'שגיאה בהתחברות')
+               }
+
+               // שמור את פרטי המשתמש ב-localStorage
+               localStorage.setItem('currentUser', JSON.stringify(result.data))
+
+               // ניתוב לפי התפקיד
+               redirectBasedOnRole(result.data.role)
+            } catch (error) {
+               console.error('Login error:', error)
+               showError(error.message || 'שגיאה בהתחברות')
+            } finally {
+               setLoading(false)
+            }
+         })
+
+         function setLoading(loading) {
+            loginBtn.disabled = loading
+            if (loading) {
+               loginBtnText.classList.add('d-none')
+               loginBtnSpinner.classList.remove('d-none')
+            } else {
+               loginBtnText.classList.remove('d-none')
+               loginBtnSpinner.classList.add('d-none')
+            }
+         }
+
+         function showError(message) {
+            loginError.textContent = message
+            loginError.classList.remove('d-none')
+         }
+
+         function hideError() {
+            loginError.classList.add('d-none')
+         }
+
+         function redirectBasedOnRole(role) {
+            switch (role) {
+               case 'employee':
+                  window.location.href = 'HomePageForEmp.html'
+                  break
+               case 'recruiter':
+                  window.location.href = 'HomePageForRec.html'
+                  break
+               default:
+                  showError('תפקיד לא מוכר')
+            }
+         }
+      })
+   </script>
 </html>
