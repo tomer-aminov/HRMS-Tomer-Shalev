@@ -3,7 +3,7 @@
    <head>
       <meta charset="UTF-8" />
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <title>HRMS - Recruiter Dashboard</title>
+      <title>HRMS - צפייה במועמדים למשרות</title>
       <link
          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
          rel="stylesheet"
@@ -45,7 +45,7 @@
             <hr class="sidebar-divider my-0" />
 
             <!-- Nav Item - Dashboard -->
-            <li class="nav-item active">
+            <li class="nav-item">
                <a class="nav-link" href="HomePageForRec.html">
                   <i class="fas fa-fw fa-tachometer-alt"></i>
                   <span>Dashboard</span></a
@@ -148,118 +148,51 @@
                <!-- Begin Page Content -->
                <div class="container-fluid">
                   <!-- Page Heading -->
-                  <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                     <h1 class="h3 mb-0 text-gray-800">לוח בקרה - מגייס</h1>
+                  <div
+                     class="d-sm-flex align-items-center justify-content-between mb-4"
+                  >
+                     <h1 class="h3 mb-0 text-gray-800"
+                        >צפייה במועמדים למשרות</h1
+                     >
+                     <a
+                        href="HomePageForRec.html"
+                        class="btn btn-primary btn-sm"
+                     >
+                        <i class="fas fa-arrow-right fa-sm"></i>
+                        חזרה ללוח הבקרה
+                     </a>
                   </div>
 
-                                     <!-- Content Row -->
-                   <div class="row">
-                      <!-- New Job Posting Button -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                         <a href="new-job-posting.html" class="text-decoration-none">
-                            <div class="card border-left-primary shadow h-100 py-2">
-                               <div class="card-body">
-                                  <div class="row no-gutters align-items-center">
-                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                           פרסום משרה חדשה
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                           יצירת משרה חדשה
-                                        </div>
-                                     </div>
-                                     <div class="col-auto">
-                                        <i class="fas fa-plus-circle fa-2x text-gray-300"></i>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </a>
-                      </div>
-
-                      <!-- View Candidates Button -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                         <a href="view-candidates.html" class="text-decoration-none">
-                            <div class="card border-left-success shadow h-100 py-2">
-                               <div class="card-body">
-                                  <div class="row no-gutters align-items-center">
-                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                           צפייה במועמדים למשרות
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                           ניהול מועמדים
-                                        </div>
-                                     </div>
-                                     <div class="col-auto">
-                                        <i class="fas fa-users fa-2x text-gray-300"></i>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </a>
-                      </div>
-
-                      <!-- Job Management Button -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                         <a href="job-management.html" class="text-decoration-none">
-                            <div class="card border-left-info shadow h-100 py-2">
-                               <div class="card-body">
-                                  <div class="row no-gutters align-items-center">
-                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-info text-uppercase mb-1">
-                                           ניהול ועריכת משרות קיימות
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                           עריכת משרות
-                                        </div>
-                                     </div>
-                                     <div class="col-auto">
-                                        <i class="fas fa-edit fa-2x text-gray-300"></i>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </a>
-                      </div>
-
-                      <!-- Current Employees Button -->
-                      <div class="col-xl-3 col-md-6 mb-4">
-                         <a href="current-employees.html" class="text-decoration-none">
-                            <div class="card border-left-warning shadow h-100 py-2">
-                               <div class="card-body">
-                                  <div class="row no-gutters align-items-center">
-                                     <div class="col mr-2">
-                                        <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                           רשימת עובדים קיימים
-                                        </div>
-                                        <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                           ניהול עובדים
-                                        </div>
-                                     </div>
-                                     <div class="col-auto">
-                                        <i class="fas fa-user-tie fa-2x text-gray-300"></i>
-                                     </div>
-                                  </div>
-                               </div>
-                            </div>
-                         </a>
-                      </div>
-                   </div>
-               </div>
-            </div>
-               <!-- End of Main Content -->
-
-               <!-- Footer -->
-               <footer class="sticky-footer bg-white">
-                  <div class="container my-auto">
-                     <div class="copyright text-center my-auto">
-                        <span> &copy; HRMS - Tomer & Shalev</span>
+                  <!-- Jobs List -->
+                  <div class="row">
+                     <div class="col-12">
+                        <div class="card shadow mb-4">
+                           <div class="card-header py-3">
+                              <h6 class="m-0 font-weight-bold text-primary">
+                                 רשימת משרות זמינות
+                              </h6>
+                           </div>
+                           <div class="card-body">
+                              <div id="jobsList" class="row">
+                                 <!-- Jobs will be loaded here dynamically -->
+                              </div>
+                           </div>
+                        </div>
                      </div>
                   </div>
-               </footer>
-               <!-- End of Footer -->
+               </div>
             </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+               <div class="container my-auto">
+                  <div class="copyright text-center my-auto">
+                     <span> &copy; HRMS - Tomer & Shalev</span>
+                  </div>
+               </div>
+            </footer>
+            <!-- End of Footer -->
          </div>
       </div>
       <!-- Closing  <div id="wrapper"> -->
@@ -306,6 +239,124 @@
             // חזרה לעמוד ההתחברות
             window.location.href = 'index.html'
          })
+
+         // טעינת המשרות מהשרת
+         loadJobs()
       })
+
+      // פונקציה לטעינת המשרות
+      async function loadJobs() {
+         try {
+            const response = await fetch('http://localhost:3000/api/jobs')
+            const result = await response.json()
+
+            if (result.success) {
+               displayJobs(result.data)
+            } else {
+               console.error('Error loading jobs:', result.message)
+               showError('שגיאה בטעינת המשרות')
+            }
+         } catch (error) {
+            console.error('Error:', error)
+            showError('שגיאה בחיבור לשרת')
+         }
+      }
+
+      // פונקציה להצגת המשרות
+      function displayJobs(jobs) {
+         const jobsListElement = document.getElementById('jobsList')
+
+         if (jobs.length === 0) {
+            jobsListElement.innerHTML = `
+               <div class="col-12 text-center">
+                  <div class="alert alert-info">
+                     <i class="fas fa-info-circle"></i>
+                     אין משרות זמינות כרגע
+                  </div>
+               </div>
+            `
+            return
+         }
+
+         const jobsHTML = jobs
+            .map(
+               (job, index) => `
+            <div class="col-lg-6 col-xl-4 mb-4">
+               <div class="card border-left-primary shadow h-100">
+                  <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                        <div class="col mr-2">
+                           <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                              משרה ${index + 1}
+                           </div>
+                           <div class="h5 mb-0 font-weight-bold text-gray-800">
+                              ${job.title}
+                           </div>
+                           <div class="text-sm text-gray-600 mt-2">
+                              ${job.description}
+                           </div>
+                           <div class="mt-3">
+                              <span class="badge badge-info">
+                                 <i class="fas fa-file-pdf"></i>
+                                 ${
+                                    job.pdfFiles ? job.pdfFiles.length : 0
+                                 } קבצי PDF
+                              </span>
+                           </div>
+                        </div>
+                        <div class="col-auto">
+                           <i class="fas fa-briefcase fa-2x text-gray-300"></i>
+                        </div>
+                     </div>
+                     <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" onclick="viewCandidates('${
+                           job._id
+                        }')">
+                           <i class="fas fa-users"></i>
+                           צפייה במועמדים
+                        </button>
+                        <button class="btn btn-outline-secondary btn-sm ml-2" onclick="viewJobDetails('${
+                           job._id
+                        }')">
+                           <i class="fas fa-eye"></i>
+                           פרטים
+                        </button>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         `
+            )
+            .join('')
+
+         jobsListElement.innerHTML = jobsHTML
+      }
+
+      // פונקציה לצפייה במועמדים למשרה ספציפית
+      function viewCandidates(jobId) {
+         // כאן תוכל להוסיף ניווט לעמוד המועמדים למשרה ספציפית
+         alert(`צפייה במועמדים למשרה: ${jobId}`)
+         // window.location.href = `job-candidates.html?jobId=${jobId}`
+      }
+
+      // פונקציה לצפייה בפרטי המשרה
+      function viewJobDetails(jobId) {
+         // כאן תוכל להוסיף ניווט לעמוד פרטי המשרה
+         alert(`פרטי המשרה: ${jobId}`)
+         // window.location.href = `job-details.html?jobId=${jobId}`
+      }
+
+      // פונקציה להצגת שגיאות
+      function showError(message) {
+         const jobsListElement = document.getElementById('jobsList')
+         jobsListElement.innerHTML = `
+            <div class="col-12 text-center">
+               <div class="alert alert-danger">
+                  <i class="fas fa-exclamation-triangle"></i>
+                  ${message}
+               </div>
+            </div>
+         `
+      }
    </script>
 </html>
