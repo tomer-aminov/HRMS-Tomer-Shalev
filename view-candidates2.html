@@ -431,8 +431,8 @@
                   data.data.fileName
                )}&hash=${fileHash}`
 
-               // פתיחת הדף בחלון חדש
-               window.open(viewerUrl, '_blank')
+               // פתיחת הדף באותו חלון
+               window.location.href = viewerUrl
             } else {
                alert('לא ניתן לפתוח את הקובץ')
             }

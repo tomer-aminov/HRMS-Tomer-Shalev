@@ -430,8 +430,8 @@
                const fileUrl = `${API_BASE_URL}/users/${currentUser._id}/view-pdf?h=${fileHash}`
                const viewerUrl = `PDFViewer.html?file=${encodeURIComponent(fileUrl)}&name=${encodeURIComponent(data.data.fileName)}&hash=${fileHash}`
                
-               // פתיחת הדף בחלון חדש
-               window.open(viewerUrl, '_blank')
+               // פתיחת הדף באותו חלון
+               window.location.href = viewerUrl
             } else {
                showMessage('לא ניתן לפתוח את הקובץ', 'warning')
             }
