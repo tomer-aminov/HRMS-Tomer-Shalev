@@ -247,6 +247,7 @@
 
    <!-- Custom scripts for all pages-->
    <script src="js/hrms-admin.min.js"></script>
+   <script src="js/config.js"></script>
 
    <!-- User Management Script -->
    <script>
@@ -301,9 +302,7 @@
       // פונקציה לטעינת פרטי המשרה והמועמדים
       async function loadJobDetails(jobId) {
          try {
-            const response = await fetch(
-               `http://localhost:3000/api/jobs/${jobId}`
-            )
+            const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`)
             const result = await response.json()
 
             console.log('Full API response:', result)
@@ -408,7 +407,7 @@
          try {
             // קבלת מידע על הקובץ מהשרת
             const response = await fetch(
-               `http://localhost:3000/api/users/${userId}/file-info`
+               `${API_BASE_URL}/users/${userId}/file-info`
             )
 
             if (!response.ok) {
@@ -425,7 +424,7 @@
                   data.data.fileHash ||
                   data.data.lastModifiedTimestamp ||
                   Date.now()
-               const fileUrl = `http://localhost:3000/api/users/${userId}/view-pdf?h=${fileHash}`
+               const fileUrl = `${API_BASE_URL}/users/${userId}/view-pdf?h=${fileHash}`
                const viewerUrl = `PDFViewer.html?file=${encodeURIComponent(
                   fileUrl
                )}&name=${encodeURIComponent(

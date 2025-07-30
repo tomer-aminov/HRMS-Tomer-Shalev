@@ -202,6 +202,7 @@
 
    <!-- Custom scripts for all pages-->
    <script src="js/hrms-admin.min.js"></script>
+   <script src="js/config.js"></script>
 
    <!-- User Management Script -->
    <script>
@@ -247,7 +248,7 @@
       // פונקציה לטעינת המשרות
       async function loadJobs() {
          try {
-            const response = await fetch('http://localhost:3000/api/jobs')
+            const response = await fetch(`${API_BASE_URL}/jobs`)
             const result = await response.json()
 
             if (result.success) {

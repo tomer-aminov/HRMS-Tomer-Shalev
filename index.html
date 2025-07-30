@@ -163,6 +163,7 @@
 
    <!-- Custom scripts for all pages-->
    <script src="js/hrms-admin.min.js"></script>
+   <script src="js/config.js"></script>
 
    <!-- Login Script -->
    <script>
@@ -199,16 +200,13 @@
 
             try {
                // התחברות עם אימייל וסיסמה
-               const response = await fetch(
-                  'http://localhost:3000/api/users/login',
-                  {
-                     method: 'POST',
-                     headers: {
-                        'Content-Type': 'application/json'
-                     },
-                     body: JSON.stringify({ email, password })
-                  }
-               )
+               const response = await fetch(`${API_BASE_URL}/users/login`, {
+                  method: 'POST',
+                  headers: {
+                     'Content-Type': 'application/json'
+                  },
+                  body: JSON.stringify({ email, password })
+               })
 
                const result = await response.json()
 

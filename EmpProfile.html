@@ -259,11 +259,12 @@
 
    <!-- Custom scripts for all pages-->
    <script src="js/hrms-admin.min.js"></script>
+   <script src="js/config.js"></script>
 
    <!-- Profile Management Script -->
    <script>
       let currentUser = null;
-      const API_BASE_URL = 'http://localhost:3000/api';
+      const API_BASE_URL = window.API_BASE_URL || 'http://localhost:3000/api';
 
       document.addEventListener('DOMContentLoaded', function () {
          // בדיקה אם המשתמש מחובר
