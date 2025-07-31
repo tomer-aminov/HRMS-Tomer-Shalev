@@ -356,6 +356,7 @@
          const jobsList = document.getElementById('jobsList')
 
          const jobsHTML = jobs
+            .reverse()
             .map(
                (job) => `
             <div class="card mb-3 border-left-primary">
