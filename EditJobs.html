@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="en">
+   <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>HRMS - עריכת משרות</title>
+      <link
+         href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+         rel="stylesheet"
+         type="text/css"
+      />
+      <link
+         href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+         rel="stylesheet"
+      />
+      <link
+         href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+         rel="stylesheet"
+      />
+      <link href="css/hrms-admin.min.css" rel="stylesheet" />
+   </head>
+   <body id="page-top">
+      <div id="wrapper">
+         <ul
+            class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
+            id="accordionSidebar"
+         >
+            <!-- Sidebar - Brand -->
+            <a
+               class="sidebar-brand d-flex align-items-center justify-content-center"
+               href="index.html"
+            >
+               <div class="sidebar-brand-icon">
+                  <img
+                     src="logo.png"
+                     alt="HRMS Logo"
+                     style="width: 40px; height: 40px; object-fit: contain"
+                  />
+               </div>
+               <div class="sidebar-brand-text mx-3">HRMS</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0" />
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+               <a class="nav-link" href="HomePageForRec.html">
+                  <i class="fas fa-fw fa-tachometer-alt"></i>
+                  <span>Dashboard</span></a
+               >
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0" />
+
+            <!-- Nav Item - Charts -->
+            <li class="nav-item">
+               <a class="nav-link" href="charts.html">
+                  <i class="fas fa-fw fa-chart-area"></i>
+                  <span>Charts</span></a
+               >
+            </li>
+
+            <!-- Nav Item - Tables -->
+            <li class="nav-item">
+               <a class="nav-link" href="tables.html">
+                  <i class="fas fa-fw fa-table"></i>
+                  <span>Tables</span></a
+               >
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider d-none d-md-block" />
+         </ul>
+         <!-- Until here side navigaton -->
+         <div id="content-wrapper" class="d-flex flex-column">
+            <!-- Main Content -->
+            <div id="content">
+               <!-- Topbar -->
+               <nav
+                  class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow"
+               >
+                  <!-- Sidebar Toggle (Topbar) -->
+                  <button
+                     id="sidebarToggleTop"
+                     class="btn btn-link d-md-none rounded-circle mr-3"
+                  >
+                     <i class="fa fa-bars"></i>
+                  </button>
+
+                  <!-- Topbar Navbar -->
+                  <ul class="navbar-nav ml-auto">
+                     <div class="topbar-divider d-none d-sm-block"></div>
+
+                     <!-- Nav Item - User Information -->
+                     <li class="nav-item dropdown no-arrow">
+                        <a
+                           class="nav-link dropdown-toggle"
+                           href="#"
+                           id="userDropdown"
+                           role="button"
+                           data-toggle="dropdown"
+                           aria-haspopup="true"
+                           aria-expanded="false"
+                        >
+                           <span class="mr-2 text-gray-600 small" id="userName"
+                              >משתמש</span
+                           >
+                        </a>
+                        <!-- Dropdown - User Information -->
+                        <div
+                           class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                           aria-labelledby="userDropdown"
+                        >
+                           <a class="dropdown-item" href="#" id="logoutBtn">
+                              <i
+                                 class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"
+                              ></i>
+                              התנתקות
+                           </a>
+                        </div>
+                     </li>
+                  </ul>
+               </nav>
+               <!-- End of Topbar -->
+
+               <!-- Begin Page Content -->
+               <div class="container-fluid">
+                  <!-- Page Heading -->
+                  <div
+                     class="d-sm-flex align-items-center justify-content-between mb-4"
+                  >
+                     <h1 class="h3 mb-0 text-gray-800">עריכת משרות</h1>
+                     <a
+                        href="HomePageForRec.html"
+                        class="btn btn-primary btn-sm"
+                     >
+                        חזרה ללוח הבקרה
+                        <i class="fas fa-arrow-right fa-sm"></i>
+                     </a>
+                  </div>
+
+                  <!-- Content Row -->
+                  <div class="row">
+                     <div class="col-12">
+                        <div class="card shadow mb-4">
+                           <div class="card-header py-3">
+                              <h6 class="m-0 font-weight-bold text-primary">
+                                 רשימת כל המשרות
+                              </h6>
+                           </div>
+                           <div class="card-body">
+                              <!-- Loading Spinner -->
+                              <div id="loadingSpinner" class="text-center py-4">
+                                 <i
+                                    class="fas fa-spinner fa-spin fa-2x text-primary"
+                                 ></i>
+                                 <p class="mt-2">טוען משרות...</p>
+                              </div>
+
+                              <!-- Jobs List -->
+                              <div id="jobsList" style="display: none">
+                                 <!-- Jobs will be loaded here dynamically -->
+                              </div>
+
+                              <!-- No Jobs Message -->
+                              <div
+                                 id="noJobsMessage"
+                                 class="text-center py-4"
+                                 style="display: none"
+                              >
+                                 <i class="fas fa-inbox fa-3x text-muted"></i>
+                                 <h5 class="mt-3 text-muted"
+                                    >אין משרות זמינות</h5
+                                 >
+                                 <p class="text-muted">לא נמצאו משרות במערכת</p>
+                              </div>
+
+                              <!-- Delete Confirmation Modal -->
+                              <div
+                                 id="deleteConfirmModal"
+                                 style="display: none"
+                              >
+                                 <div class="alert alert-warning mt-3">
+                                    <div class="d-flex align-items-center">
+                                       <i
+                                          class="fas fa-exclamation-triangle fa-2x text-warning mr-3"
+                                       ></i>
+                                       <div class="flex-grow-1">
+                                          <h6 class="alert-heading mb-2"
+                                             >אישור מחיקה</h6
+                                          >
+                                          <p class="mb-3" id="deleteConfirmText"
+                                             >האם אתה בטוח שברצונך למחוק את
+                                             המשרה?</p
+                                          >
+                                          <div class="btn-group" role="group">
+                                             <button
+                                                type="button"
+                                                class="btn btn-danger btn-sm"
+                                                id="confirmDeleteBtn"
+                                             >
+                                                <i class="fas fa-trash"></i>
+                                                כן, מחק
+                                             </button>
+                                             <button
+                                                type="button"
+                                                class="btn btn-secondary btn-sm"
+                                                id="cancelDeleteBtn"
+                                             >
+                                                <i class="fas fa-times"></i>
+                                                לא, בטל
+                                             </button>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+
+                              <!-- Delete Success Message -->
+                              <div
+                                 id="deleteSuccessMessage"
+                                 style="display: none"
+                              >
+                                 <div class="alert alert-success mt-3">
+                                    <div class="d-flex align-items-center">
+                                       <i
+                                          class="fas fa-check-circle fa-2x text-success mr-3"
+                                       ></i>
+                                       <div>
+                                          <h6 class="alert-heading mb-1"
+                                             >המשרה נמחקה בהצלחה!</h6
+                                          >
+                                          <p class="mb-0" id="deleteSuccessText"
+                                             >המשרה הוסרה מהמערכת</p
+                                          >
+                                       </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <!-- End of Main Content -->
+
+            <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+               <div class="container my-auto">
+                  <div class="copyright text-center my-auto">
+                     <span> &copy; HRMS - Tomer & Shalev</span>
+                  </div>
+               </div>
+            </footer>
+            <!-- End of Footer -->
+         </div>
+      </div>
+      <!-- Closing  <div id="wrapper"> -->
+   </body>
+   <script src="vendor/jquery/jquery.min.js"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js"></script>
+
+   <!-- Custom scripts for all pages-->
+   <script src="js/hrms-admin.min.js"></script>
+   <script src="js/config.js"></script>
+
+   <!-- Job Management Script -->
+   <script>
+      document.addEventListener('DOMContentLoaded', function () {
+         // בדיקה אם המשתמש מחובר
+         const currentUser = localStorage.getItem('currentUser')
+         if (!currentUser) {
+            // אם לא מחובר, חזור לעמוד ההתחברות
+            window.location.href = 'index.html'
+            return
+         }
+
+         const user = JSON.parse(currentUser)
+
+         // בדיקה שהמשתמש הוא recruiter
+         if (user.role !== 'recruiter') {
+            // אם לא recruiter, חזור לעמוד ההתחברות
+            localStorage.removeItem('currentUser')
+            window.location.href = 'index.html'
+            return
+         }
+
+         // הצג את שם המשתמש
+         const userNameElement = document.getElementById('userName')
+         userNameElement.textContent = `${user.firstName} ${user.lastName}`
+
+         // כפתור התנתקות
+         const logoutBtn = document.getElementById('logoutBtn')
+         logoutBtn.addEventListener('click', function (e) {
+            e.preventDefault()
+
+            // מחיקת פרטי המשתמש
+            localStorage.removeItem('currentUser')
+
+            // חזרה לעמוד ההתחברות
+            window.location.href = 'index.html'
+         })
+
+         // טעינת המשרות
+         loadJobs()
+
+         // Event listeners לכפתורי מחיקה
+         document
+            .getElementById('confirmDeleteBtn')
+            .addEventListener('click', function () {
+               if (currentDeleteJobId) {
+                  performDeleteJob(currentDeleteJobId)
+               }
+            })
+
+         document
+            .getElementById('cancelDeleteBtn')
+            .addEventListener('click', function () {
+               document.getElementById('deleteConfirmModal').style.display =
+                  'none'
+               currentDeleteJobId = null
+               currentDeleteJobTitle = null
+            })
+      })
+
+      // פונקציה לטעינת המשרות
+      async function loadJobs() {
+         const loadingSpinner = document.getElementById('loadingSpinner')
+         const jobsList = document.getElementById('jobsList')
+         const noJobsMessage = document.getElementById('noJobsMessage')
+
+         try {
+            const response = await fetch(`${API_BASE_URL}/jobs`)
+            const result = await response.json()
+
+            loadingSpinner.style.display = 'none'
+
+            if (response.ok && result.data && result.data.length > 0) {
+               displayJobs(result.data)
+               jobsList.style.display = 'block'
+            } else {
+               noJobsMessage.style.display = 'block'
+            }
+         } catch (error) {
+            console.error('Error loading jobs:', error)
+            loadingSpinner.style.display = 'none'
+            noJobsMessage.style.display = 'block'
+         }
+      }
+
+      // פונקציה להצגת המשרות
+      function displayJobs(jobs) {
+         const jobsList = document.getElementById('jobsList')
+
+         const jobsHTML = jobs
+            .map(
+               (job) => `
+            <div class="card mb-3 border-left-primary">
+               <div class="card-body">
+                  <div class="row align-items-center">
+                     <div class="col-md-8">
+                        <h5 class="card-title text-primary">${job.title}</h5>
+                        <p class="card-text text-muted">${job.description}</p>
+                        <small class="text-muted">
+                           <i class="fas fa-users"></i>
+                           ${job.users ? job.users.length : 0} מועמדים
+                        </small>
+                     </div>
+                     <div class="col-md-4 text-left">
+                        <div class="btn-group" role="group">
+                           <button 
+                              class="btn btn-warning btn-sm" 
+                              onclick="window.location.href='ChangeSpecificJob.html?id=${
+                                 job._id
+                              }&title=${encodeURIComponent(
+                  job.title
+               )}&description=${encodeURIComponent(job.description)}'"
+                              title="עריכה"
+                           >
+                              <i class="fas fa-edit"></i>
+                              עריכה
+                           </button>
+                           <button 
+                              class="btn btn-danger btn-sm" 
+                              onclick="showDeleteConfirm('${job._id}', '${
+                  job.title
+               }')"
+                              id="deleteBtn-${job._id}"
+                              title="מחיקה"
+                           >
+                              <i class="fas fa-trash"></i>
+                              מחיקה
+                           </button>
+                        </div>
+                        <div id="deleteConfirm-${
+                           job._id
+                        }" class="delete-confirm-popover" style="display:none; position:relative;">
+                           <div class="alert alert-warning p-2 mb-1 mt-2 small d-inline-block" style="min-width:180px; max-width:250px;">
+                              <div class="mb-2 text-center" style="font-size:0.95em;">? &quot; האם למחוק את &quot;${
+                                 job.title
+                              }</div>
+                              <div class="btn-group btn-group-sm w-100" role="group">
+                                 <button type="button" class="btn btn-danger btn-sm" onclick="confirmDeleteJob('${
+                                    job._id
+                                 }')">כן</button>
+                                 <button type="button" class="btn btn-secondary btn-sm" onclick="cancelDeleteJob('${
+                                    job._id
+                                 }')">לא</button>
+                              </div>
+                           </div>
+                        </div>
+                        <div id="deleteSuccess-${
+                           job._id
+                        }" class="delete-success-popover" style="display:none; position:relative;">
+                           <div class="alert alert-success p-2 mb-1 mt-2 small d-inline-block" style="min-width:180px; max-width:250px;">
+                              <div class="d-flex align-items-center">
+                                 <i class="fas fa-check-circle fa-lg text-success mr-2"></i>
+                                 <span>! המשרה נמחקה בהצלחה</span>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         `
+            )
+            .join('')
+
+         jobsList.innerHTML = jobsHTML
+      }
+
+      // פונקציה לעריכת משרה
+      function editJob(jobId, title, description) {
+         // יצירת טופס עריכה
+         const newTitle = prompt('כותרת המשרה:', title)
+         if (newTitle === null) return // המשתמש ביטל
+
+         const newDescription = prompt('תיאור המשרה:', description)
+         if (newDescription === null) return // המשתמש ביטל
+
+         if (newTitle.trim() === '' || newDescription.trim() === '') {
+            alert('כותרת ותיאור המשרה הם שדות חובה!')
+            return
+         }
+
+         // שליחת בקשת עדכון
+         updateJob(jobId, newTitle, newDescription)
+      }
+
+      // פונקציה לעדכון משרה בשרת
+      async function updateJob(jobId, title, description) {
+         try {
+            const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+               method: 'PUT',
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: JSON.stringify({
+                  title: title,
+                  description: description
+               })
+            })
+
+            const result = await response.json()
+
+            if (response.ok) {
+               alert('המשרה עודכנה בהצלחה!')
+               loadJobs() // טעינה מחדש של הרשימה
+            } else {
+               alert(
+                  `שגיאה בעדכון המשרה: ${result.message || 'שגיאה לא ידועה'}`
+               )
+            }
+         } catch (error) {
+            console.error('Error updating job:', error)
+            alert('שגיאה בתקשורת עם השרת. אנא נסה שוב.')
+         }
+      }
+
+      // משתנים גלובליים למחיקה
+      let currentDeleteJobId = null
+      let currentDeleteJobTitle = null
+
+      // פונקציה למחיקת משרה
+      function deleteJob(jobId, title) {
+         currentDeleteJobId = jobId
+         currentDeleteJobTitle = title
+
+         // הצגת חלונית אישור מחיקה
+         const deleteConfirmModal =
+            document.getElementById('deleteConfirmModal')
+         const deleteConfirmText = document.getElementById('deleteConfirmText')
+
+         deleteConfirmText.textContent = `האם אתה בטוח שברצונך למחוק את המשרה "${title}"?\n\nפעולה זו אינה הפיכה!`
+         deleteConfirmModal.style.display = 'block'
+
+         // הסתרת הודעות אחרות
+         document.getElementById('deleteSuccessMessage').style.display = 'none'
+      }
+
+      // פונקציה לביצוע מחיקת משרה
+      async function performDeleteJob(jobId) {
+         try {
+            const response = await fetch(`${API_BASE_URL}/jobs/${jobId}`, {
+               method: 'DELETE'
+            })
+
+            const result = await response.json()
+
+            if (response.ok) {
+               // הסתרת כל הודעות הצלחה קודמות
+               document
+                  .querySelectorAll('.delete-success-popover')
+                  .forEach((el) => (el.style.display = 'none'))
+               // הצגת הודעת הצלחה מתחת לכפתור המתאים
+               const successDiv = document.getElementById(
+                  'deleteSuccess-' + jobId
+               )
+               if (successDiv) {
+                  successDiv.style.display = 'block'
+                  setTimeout(() => {
+                     successDiv.style.display = 'none'
+                  }, 3500)
+               }
+               // טעינה מחדש של הרשימה (אפשר לעכב מעט כדי שההודעה תוצג)
+               setTimeout(() => loadJobs(), 1200)
+            } else {
+               alert(
+                  `שגיאה במחיקת המשרה: ${result.message || 'שגיאה לא ידועה'}`
+               )
+            }
+         } catch (error) {
+            console.error('Error deleting job:', error)
+            alert('שגיאה בתקשורת עם השרת. אנא נסה שוב.')
+         }
+      }
+
+      // משתנה גלובלי לשמירת ה-id של הפופ-אבר הפתוח
+      let openDeletePopoverId = null
+
+      // הצגת פופ-אבר מחיקה מתחת לכפתור המתאים
+      window.showDeleteConfirm = function (jobId, title) {
+         // סגור פופ-אבר פתוח אחר
+         if (openDeletePopoverId && openDeletePopoverId !== jobId) {
+            const prev = document.getElementById(
+               'deleteConfirm-' + openDeletePopoverId
+            )
+            if (prev) prev.style.display = 'none'
+         }
+         // פתח את הפופ-אבר הנוכחי
+         const pop = document.getElementById('deleteConfirm-' + jobId)
+         if (pop) pop.style.display = 'block'
+         openDeletePopoverId = jobId
+         // הסתר הודעת הצלחה
+         document.getElementById('deleteSuccessMessage').style.display = 'none'
+      }
+
+      // ביטול פופ-אבר
+      window.cancelDeleteJob = function (jobId) {
+         const pop = document.getElementById('deleteConfirm-' + jobId)
+         if (pop) pop.style.display = 'none'
+         openDeletePopoverId = null
+      }
+
+      // אישור מחיקה
+      window.confirmDeleteJob = function (jobId) {
+         performDeleteJob(jobId)
+         // סגור את הפופ-אבר מיד
+         cancelDeleteJob(jobId)
+      }
+   </script>
+</html>
