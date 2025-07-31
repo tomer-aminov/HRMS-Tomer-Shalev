@@ -304,38 +304,82 @@
          }
 
          const jobsHTML = jobs
-            .map(
-               (job, index) => `
-               <div class="col-lg-6 col-xl-4 mb-4">
-                  <div class="card border-left-primary shadow h-100">
-                     <div class="card-body">
-                        <div class="row no-gutters align-items-center">
-                           <div class="col mr-2">
-                              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                 משרה ${index + 1}
-                              </div>
-                              <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                 ${job.title}
-                              </div>
-                              <div class="text-sm text-gray-600 mt-2">
-                                 ${job.description}
-                              </div>
-                              <div class="mt-3">
-                                 <span class="badge badge-info">
-                                    <i class="fas fa-users"></i>
-                                    ${job.users ? job.users.length : 0} מועמדים
-                                 </span>
-                              </div>
-                           </div>
-                           <div class="col-auto">
-                              <i class="fas fa-briefcase fa-2x text-gray-300"></i>
-                           </div>
-                        </div>
-                     </div>
-                  </div>
-               </div>
-            `
-            )
+            .map((job, index) => {
+               const currentUser = JSON.parse(
+                  localStorage.getItem('currentUser')
+               )
+               const hasApplied =
+                  job.users &&
+                  job.users.some((user) => user._id === currentUser._id)
+
+               return `
+                <div class="col-lg-6 col-xl-4 mb-4">
+                   <div class="card border-left-primary shadow h-100">
+                      <div class="card-body">
+                         <div class="row no-gutters align-items-center">
+                            <div class="col mr-2">
+                               <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                  משרה ${index + 1}
+                               </div>
+                               <div class="h5 mb-0 font-weight-bold text-gray-800">
+                                  ${job.title}
+                               </div>
+                               <div class="text-sm text-gray-600 mt-2">
+                                  ${job.description}
+                               </div>
+                               <div class="mt-3">
+                                  <span class="badge badge-info" dir="rtl">
+                                     
+                                      ${
+                                         job.users ? job.users.length : 0
+                                      }  מועמדים
+                                       <i class="fas fa-users"></i>
+                                  </span>
+                               </div>
+                                                               <div class="mt-3">
+                                   <button 
+                                      class="btn ${
+                                         hasApplied
+                                            ? 'btn-success'
+                                            : 'btn-primary'
+                                      } btn-sm" 
+                                      onclick="toggleApplication('${
+                                         job._id
+                                      }', ${hasApplied})"
+                                      id="btn-${job._id}"
+                                   >
+                                      <i class="fas ${
+                                         hasApplied
+                                            ? 'fa-times'
+                                            : 'fa-paper-plane'
+                                      }"></i>
+                                      ${
+                                         hasApplied
+                                            ? 'הקובץ הוגש - לחץ לביטול'
+                                            : 'לחץ להגשה'
+                                      }
+                                   </button>
+                                   <div id="notification-${
+                                      job._id
+                                   }" class="mt-2" style="display: none;">
+                                      <small class="text-success">
+                                         <i class="fas fa-check-circle"></i>
+                                         <span id="notification-text-${
+                                            job._id
+                                         }"></span>
+                                      </small>
+                                   </div>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                               <i class="fas fa-briefcase fa-2x text-gray-300"></i>
+                            </div>
+                         </div>
+                      </div>
+                   </div>
+                </div>
+             `
+            })
             .join('')
 
          jobsContainer.innerHTML = jobsHTML
@@ -345,11 +389,142 @@
       function showError(message) {
          const jobsContainer = document.getElementById('jobsContainer')
          jobsContainer.innerHTML = `
-            <div class="alert alert-danger" role="alert">
-               <i class="fas fa-exclamation-triangle"></i>
-               ${message}
-            </div>
-         `
+             <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle"></i>
+                ${message}
+             </div>
+          `
+      }
+
+      // פונקציה לטיפול בהגשת מועמדות
+      async function toggleApplication(jobId, hasApplied) {
+         const currentUser = JSON.parse(localStorage.getItem('currentUser'))
+         const button = document.getElementById(`btn-${jobId}`)
+
+         try {
+            // הצג מצב טעינה
+            button.disabled = true
+            button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> טוען...'
+
+            let url, method
+
+            if (hasApplied) {
+               // הסרת מועמדות
+               url = `${API_BASE_URL}/jobs/${jobId}/users/${currentUser._id}`
+               method = 'DELETE'
+            } else {
+               // הוספת מועמדות
+               url = `${API_BASE_URL}/jobs/${jobId}/users`
+               method = 'POST'
+            }
+
+            const response = await fetch(url, {
+               method: method,
+               headers: {
+                  'Content-Type': 'application/json'
+               },
+               body: hasApplied
+                  ? undefined
+                  : JSON.stringify({
+                       userId: currentUser._id
+                    })
+            })
+
+            const result = await response.json()
+
+            if (result.success) {
+               // הצג הודעה מקומית
+               showLocalNotification(
+                  jobId,
+                  hasApplied ? 'המועמדות בוטלה בהצלחה' : 'המועמדות הוגשה בהצלחה'
+               )
+
+               // עדכון מיידי של הכפתור והמספרים
+               updateJobDisplay(jobId, !hasApplied)
+            } else {
+               throw new Error(result.message || 'שגיאה בטיפול במועמדות')
+            }
+         } catch (error) {
+            console.error('שגיאה בטיפול במועמדות:', error)
+            showLocalNotification(jobId, 'שגיאה בטיפול במועמדות', 'error')
+
+            // החזרת הכפתור למצב הקודם
+            if (hasApplied) {
+               button.className = 'btn btn-success btn-sm'
+               button.innerHTML =
+                  '<i class="fas fa-times"></i> הקובץ הוגש - לחץ לביטול'
+            } else {
+               button.className = 'btn btn-primary btn-sm'
+               button.innerHTML = '<i class="fas fa-paper-plane"></i> לחץ להגשה'
+            }
+         } finally {
+            button.disabled = false
+         }
+      }
+
+      // פונקציה לעדכון תצוגת המשרה ללא רענון מלא
+      function updateJobDisplay(jobId, hasApplied) {
+         const button = document.getElementById(`btn-${jobId}`)
+         const badge = button.closest('.card').querySelector('.badge')
+
+         // עדכון הכפתור
+         if (hasApplied) {
+            // הגיש מועמדות
+            button.className = 'btn btn-success btn-sm'
+            button.innerHTML =
+               '<i class="fas fa-times"></i> הקובץ הוגש - לחץ לביטול'
+            button.onclick = () => toggleApplication(jobId, true)
+         } else {
+            // ביטל הגשה
+            button.className = 'btn btn-primary btn-sm'
+            button.innerHTML = '<i class="fas fa-paper-plane"></i> לחץ להגשה'
+            button.onclick = () => toggleApplication(jobId, false)
+         }
+
+         // עדכון מספר המועמדים
+         const currentCount = parseInt(badge.textContent.match(/\d+/)[0])
+         const newCount = hasApplied ? currentCount + 1 : currentCount - 1
+         badge.innerHTML = ` ${newCount} מועמדים <i class="fas fa-users"></i>`
+      }
+
+      // פונקציה להצגת הודעות מקומיות
+      function showLocalNotification(jobId, message, type = 'success') {
+         const notificationDiv = document.getElementById(
+            `notification-${jobId}`
+         )
+         const notificationText = document.getElementById(
+            `notification-text-${jobId}`
+         )
+
+         if (notificationDiv && notificationText) {
+            // עדכון הטקסט
+            notificationText.textContent = message
+
+            // עדכון הצבע לפי סוג ההודעה
+            if (type === 'error') {
+               notificationDiv.innerHTML = `
+                   <small class="text-danger">
+                      <i class="fas fa-exclamation-circle"></i>
+                      <span id="notification-text-${jobId}">${message}</span>
+                   </small>
+                `
+            } else {
+               notificationDiv.innerHTML = `
+                   <small class="text-success">
+                      <i class="fas fa-check-circle"></i>
+                      <span id="notification-text-${jobId}">${message}</span>
+                   </small>
+                `
+            }
+
+            // הצגת ההודעה
+            notificationDiv.style.display = 'block'
+
+            // הסתרת ההודעה אחרי 3 שניות
+            setTimeout(() => {
+               notificationDiv.style.display = 'none'
+            }, 3000)
+         }
       }
    </script>
 </html>
